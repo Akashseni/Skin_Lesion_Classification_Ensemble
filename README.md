@@ -1,277 +1,188 @@
-# 🩺 Skin Lesion Classification using Deep Learning
-
+🩺 Skin Lesion Classification using Deep Learning
 <div align="center">
-
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-Keras-orange)
-![Computer Vision](https://img.shields.io/badge/Computer%20Vision-Medical%20AI-green)
+![Computer Vision](https://img.shields.io/badge/Domain-Medical%20AI-green)
 ![Status](https://img.shields.io/badge/Status-Completed-success)
-
 </div>
-
 ---
-
-## 📌 Project Overview
-
-Skin cancer is one of the most common and potentially life-threatening diseases worldwide. Early diagnosis significantly improves treatment outcomes and patient survival rates.
-
-This project presents a **deep learning-based skin lesion classification system** capable of automatically identifying different categories of skin lesions from dermoscopic images. The system leverages **transfer learning**, **data augmentation**, and **advanced image preprocessing** techniques to improve classification performance and robustness.
-
-The goal of this project is to develop an intelligent medical image analysis pipeline that can assist healthcare professionals in early skin cancer screening and diagnosis.
-
+📌 Overview
+Skin cancer is one of the most common and clinically important forms of cancer, and early detection can significantly improve treatment outcomes.
+This project presents a deep learning-based skin lesion classification system built on the HAM10000 dermoscopic image dataset. The model learns visual patterns from skin lesion images and classifies them into multiple diagnostic categories using transfer learning and an ensemble-based training strategy.
+The workflow includes:
+image preprocessing
+data augmentation
+class imbalance handling
+ensemble model training
+fine-tuning
+performance evaluation
+confusion matrix analysis
 ---
-
-## 🎯 Objectives
-
-- Automate skin lesion classification using deep learning.
-- Improve diagnostic efficiency through AI-assisted analysis.
-- Handle class imbalance in medical datasets.
-- Build a reliable multi-class classification pipeline.
-- Evaluate model performance using industry-standard metrics.
-
+🎯 Project Goal
+The goal of this project is to build a robust medical image classification pipeline that can assist in automated skin lesion analysis and support early diagnosis.
 ---
-
-## 🧠 Model Architecture
-
-The classification framework follows a complete deep learning workflow:
-
+🧠 Model Architecture
+This notebook implements an ensemble of three EfficientNetB0-based classifiers.  
+Each model is trained on dermoscopic images and their predictions are combined to produce the final output.
 ```text
 Input Dermoscopic Image
-           │
-           ▼
-   Image Preprocessing
-           │
-           ▼
-    Data Augmentation
-           │
-           ▼
- Transfer Learning Model
-           │
-           ▼
-   Feature Extraction
-           │
-           ▼
- Classification Layer
-           │
-           ▼
- Predicted Lesion Class
+        │
+        ▼
+Image Preprocessing
+        │
+        ▼
+Data Augmentation
+        │
+        ▼
+EfficientNetB0 Backbone
+        │
+        ▼
+Feature Extraction
+        │
+        ▼
+Ensemble of 3 Models
+        │
+        ▼
+Final Softmax Prediction
 ```
-
-The model learns discriminative visual features such as:
-
-- Color variations
-- Border irregularities
-- Texture patterns
-- Shape characteristics
-- Lesion structure
-
-These features are crucial for differentiating between benign and malignant skin lesions.
-
+Training Techniques Used
+Transfer learning with EfficientNetB0
+Mixed precision training
+MixUp augmentation
+Focal loss
+Class weights for imbalance handling
+Early stopping
+Model checkpointing
+Fine-tuning with a lower learning rate
 ---
-
-## 🔍 Skin Lesion Categories
-
-The model classifies dermoscopic images into multiple lesion categories:
-
-| Class | Description |
-|---------|------------|
-| MEL | Melanoma |
-| NV | Melanocytic Nevus |
-| BCC | Basal Cell Carcinoma |
-| BKL | Benign Keratosis-like Lesions |
-| AKIEC | Actinic Keratoses |
-| DF | Dermatofibroma |
-| VASC | Vascular Lesions |
-
+🏷️ Skin Lesion Categories
+The model classifies images into the following 7 HAM10000 classes:
+Label	Class
+mel	Melanoma
+nv	Melanocytic nevus
+bcc	Basal cell carcinoma
+bkl	Benign keratosis
+akiec	Actinic keratosis
+df	Dermatofibroma
+vasc	Vascular lesion
 ---
-
-## ✨ Key Features
-
-- Multi-Class Skin Lesion Classification
-- Deep Learning-Based Image Analysis
-- Transfer Learning Architecture
-- Advanced Data Augmentation
-- Class Imbalance Handling
-- Medical Image Processing Pipeline
-- Confusion Matrix Evaluation
-- ROC-AUC Analysis
-- Early Stopping and Learning Rate Scheduling
-- GPU Accelerated Training
-
+📂 Dataset
+Dataset used: HAM10000  
+Source: Dermoscopic skin lesion images with metadata labels
+Dataset Split
+The notebook organizes the dataset into an 80/20 train-validation split.
+Split	Images
+Train	8050
+Validation	1965
+Class Imbalance
+The dataset is heavily imbalanced, so the notebook uses:
+class weights
+focal loss
+MixUp augmentation
+This helps the model learn minority classes more effectively.
 ---
-
-## 📂 Dataset
-
-### HAM10000 Dataset
-
-This project utilizes the **HAM10000 (Human Against Machine with 10000 Training Images)** dataset.
-
-#### Dataset Highlights
-
-- 10,000+ dermoscopic images
-- 7 lesion categories
-- Real-world clinical cases
-- High-quality medical imaging data
-- Public benchmark dataset for skin lesion analysis
-
-The dataset provides a diverse collection of pigmented skin lesions commonly encountered in clinical dermatology.
-
+✨ Key Features
+Multi-class skin lesion classification
+Transfer learning with EfficientNetB0
+Ensemble learning with 3 models
+Advanced data augmentation
+Mixed precision training
+Class imbalance handling
+Fine-tuning stage
+Confusion matrix visualization
+Classification report analysis
 ---
-
-## 🔄 Project Workflow
-
-### 1️⃣ Data Collection
-
-- Load dermoscopic images
-- Read lesion labels
-- Verify dataset quality
-
-### 2️⃣ Image Preprocessing
-
-- Resize images
-- Normalize pixel values
-- Remove inconsistencies
-
-### 3️⃣ Data Augmentation
-
-- Rotation
-- Horizontal Flip
-- Vertical Flip
-- Zoom
-- Brightness Adjustment
-
-These augmentations improve model generalization and reduce overfitting.
-
-### 4️⃣ Model Training
-
-- Transfer Learning
-- Fine-Tuning
-- Hyperparameter Optimization
-- Validation Monitoring
-
-### 5️⃣ Performance Evaluation
-
-The trained model is evaluated using:
-
-- Accuracy
-- Precision
-- Recall
-- F1 Score
-- ROC-AUC
-- Confusion Matrix
-
+🔄 Training Pipeline
+1) Data Preparation
+Read the HAM10000 metadata CSV
+Map image IDs to lesion labels
+Organize images into train and validation folders
+2) Preprocessing
+Resize images to 224 × 224
+Normalize input data
+Apply augmentation during training
+3) Training
+Train the ensemble model
+Use class weights and focal loss
+Monitor validation performance
+Save the best model checkpoints
+4) Fine-Tuning
+Unfreeze the backbone models
+Continue training with a very small learning rate
+Restore the best weights using early stopping
+5) Evaluation
+Compute validation accuracy
+Generate classification report
+Plot confusion matrix
+Visualize sample predictions
 ---
-
-## 📊 Evaluation Metrics
-
-| Metric | Purpose |
-|----------|----------|
-| Accuracy | Overall prediction correctness |
-| Precision | Quality of positive predictions |
-| Recall | Ability to detect actual positives |
-| F1-Score | Balance between precision and recall |
-| ROC-AUC | Classification capability across thresholds |
-
+📊 Model Summary
+Item	Value
+Input Size	224 × 224
+Number of Classes	7
+Ensemble Size	3 models
+Total Parameters	12,175,614
+Trainable Parameters	12,049,545
+Non-trainable Parameters	126,069
 ---
-
-## 📈 Results
-
-> Replace this section with your final results after training.
-
-| Metric | Value |
-|----------|----------|
-| Accuracy | XX.XX% |
-| Precision | XX.XX% |
-| Recall | XX.XX% |
-| F1 Score | XX.XX% |
-| ROC-AUC | XX.XX% |
-
-### Sample Visualizations
-
-Add screenshots here:
-
-- Confusion Matrix
-- ROC Curve
-- Training Accuracy Curve
-- Validation Loss Curve
-- Sample Predictions
-
+📈 Training Results
+Final Validation Performance
+Metric	Value
+Validation Accuracy after Fine-Tuning	80.66%
+Final Validation Accuracy	80.31%
+Validation Loss (final)	0.0761
+Training Progress
+The model started around 50.75% training accuracy in the first epoch.
+Validation accuracy improved steadily across epochs.
+After fine-tuning, the model reached 80%+ validation accuracy.
+The final saved model achieved 80.31% validation accuracy on the validation set.
 ---
-
-## 🛠 Technologies Used
-
-| Category | Tools |
-|-----------|--------|
-| Programming | Python |
-| Deep Learning | TensorFlow, Keras |
-| Data Processing | NumPy, Pandas |
-| Visualization | Matplotlib, Seaborn |
-| Machine Learning | Scikit-Learn |
-| Image Processing | OpenCV |
-| Development Environment | Jupyter Notebook / Kaggle |
-
+🖼️ Evaluation Outputs
+The notebook also generates:
+Classification Report Heatmap
+Confusion Matrix
+Sample Prediction Grid
+Training vs Validation Accuracy Plot
+Training vs Validation Loss Plot
+These visualizations help understand the model's strengths and weaknesses across lesion classes.
 ---
-
-## 📁 Repository Structure
-
+🛠 Technologies Used
+Category	Tools
+Programming	Python
+Deep Learning	TensorFlow, Keras
+Data Handling	NumPy, Pandas
+Visualization	Matplotlib, Seaborn
+Machine Learning	Scikit-Learn
+Environment	Kaggle Notebook
+---
+📁 Repository Structure
 ```text
 Skin-Lesion-Classification/
-│
 ├── skin-lesion-classification.ipynb
 ├── README.md
 ├── requirements.txt
-│
 ├── dataset/
-│
 ├── models/
-│
 ├── outputs/
 │   ├── confusion_matrix.png
-│   ├── roc_curve.png
-│   ├── training_curve.png
-│   └── predictions/
-│
+│   ├── classification_report.png
+│   ├── training_curves.png
+│   └── sample_predictions.png
 └── images/
 ```
-
 ---
-
-## 🚀 Future Improvements
-
-- Vision Transformer (ViT) Implementation
-- Ensemble Deep Learning Models
-- Explainable AI using Grad-CAM
-- Clinical Metadata Integration
-- Real-Time Diagnosis Web Application
-- Mobile Deployment
-- Edge AI Optimization
-
+🚀 Future Improvements
+Add Grad-CAM explainability
+Try Vision Transformer based backbones
+Experiment with deeper ensemble architectures
+Add calibration metrics
+Build a Streamlit web app for inference
+Deploy the model as a lightweight medical AI demo
 ---
-
-## 🎓 Learning Outcomes
-
-Through this project, the following concepts were explored:
-
-- Deep Learning for Medical Imaging
-- Transfer Learning
-- Computer Vision
-- Data Augmentation
-- Multi-Class Classification
-- Model Evaluation Techniques
-- Medical AI Applications
-
----
-
-## 👨‍💻 Author
-
-**Akash Senigarapu**
-
-Artificial Intelligence & Machine Learning
-
+👨‍💻 Author
+Akash Senigarapu  
+Artificial Intelligence & Machine Learning  
 Chaitanya Bharathi Institute of Technology (CBIT)
-
 ---
-
-## ⭐ Support
-
-If you found this project useful, consider giving it a **star ⭐** on GitHub.
+⭐ Support
+If you found this project useful, consider starring the repository on GitHub.
